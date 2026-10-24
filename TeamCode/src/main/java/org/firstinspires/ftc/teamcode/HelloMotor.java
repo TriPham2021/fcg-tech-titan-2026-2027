@@ -13,19 +13,21 @@ public class HelloMotor extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor backLeft;
     private DcMotor backRight;
+    private float speed = 0.5f;
 
     @Override
     public void runOpMode() {
 
         // Initialize motors using their configured hardware names
-        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
-        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
-        backRight = hardwareMap.get(DcMotor.class, "backRight");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");//0
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");//3
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");//1
+        backRight = hardwareMap.get(DcMotor.class, "backRight");//2
 
         // Reverse the right-side motors for a typical drivetrain setup
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Use open-loop power control
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -61,10 +63,10 @@ public class HelloMotor extends LinearOpMode {
                             Math.abs(backRightPower))
             ));
 
-            frontLeft.setPower(frontLeftPower / max);
-            backLeft.setPower(backLeftPower / max);
-            frontRight.setPower(frontRightPower / max);
-            backRight.setPower(backRightPower / max);
+            frontLeft.setPower(frontLeftPower / max * speed);
+            backLeft.setPower(backLeftPower / max * speed);
+            frontRight.setPower(frontRightPower / max * speed);
+            backRight.setPower(backRightPower / max * speed);
 
             telemetry.addData("Forward", "%.2f", y);
             telemetry.addData("Strafe", "%.2f", x);

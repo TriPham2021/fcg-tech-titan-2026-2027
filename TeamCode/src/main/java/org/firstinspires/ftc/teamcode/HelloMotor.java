@@ -9,31 +9,30 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @TeleOp(name = "Mecanum Drive Example", group = "Examples")
 public class HelloMotor extends LinearOpMode {
 
-    private DcMotor frontLeft;
-    private DcMotor frontRight;
-    private DcMotor backLeft;
-    private DcMotor backRight;
+    private DcMotor leftFront;
+    private DcMotor rightFront;
+    private DcMotor leftBack;
+    private DcMotor rightBack;
     private float speed = 0.5f;
 
     @Override
     public void runOpMode() {
 
         // Initialize motors using their configured hardware names
-        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");//0
-        frontRight = hardwareMap.get(DcMotor.class, "frontRight");//3
-        backLeft = hardwareMap.get(DcMotor.class, "backLeft");//1
-        backRight = hardwareMap.get(DcMotor.class, "backRight");//2
+        leftFront = hardwareMap.get(DcMotor.class, "leftFront");//2
+        rightFront = hardwareMap.get(DcMotor.class, "rightFront");//1
+        leftBack = hardwareMap.get(DcMotor.class, "leftBack");//3
+        rightBack = hardwareMap.get(DcMotor.class, "rightBack");//0
 
         // Reverse the right-side motors for a typical drivetrain setup
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Use open-loop power control
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         telemetry.addLine("Drivetrain initialized");
         telemetry.update();
@@ -50,23 +49,23 @@ public class HelloMotor extends LinearOpMode {
             double turn = gamepad1.right_stick_x;
 
             // Mecanum wheel power calculations
-            double frontLeftPower  = y + x + turn;
-            double backLeftPower   = y - x + turn;
-            double frontRightPower = y - x - turn;
-            double backRightPower  = y + x - turn;
+            double leftFrontPower  = y + x + turn;
+            double leftBackPower   = y - x + turn;
+            double rightFrontPower = y - x - turn;
+            double rightBackPower  = y + x - turn;
 
             // Normalize powers so none exceed [-1, 1]
             double max = Math.max(1.0, Math.max(
-                    Math.max(Math.abs(frontLeftPower),
-                            Math.abs(backLeftPower)),
-                    Math.max(Math.abs(frontRightPower),
-                            Math.abs(backRightPower))
+                    Math.max(Math.abs(leftFrontPower),
+                            Math.abs(leftBackPower)),
+                    Math.max(Math.abs(rightFrontPower),
+                            Math.abs(rightBackPower))
             ));
 
-            frontLeft.setPower(frontLeftPower / max * speed);
-            backLeft.setPower(backLeftPower / max * speed);
-            frontRight.setPower(frontRightPower / max * speed);
-            backRight.setPower(backRightPower / max * speed);
+            leftFront.setPower(leftFrontPower / max * speed);
+            leftBack.setPower(leftBackPower / max * speed);
+            rightFront.setPower(rightFrontPower / max * speed);
+            rightBack.setPower(rightBackPower / max * speed);
 
             telemetry.addData("Forward", "%.2f", y);
             telemetry.addData("Strafe", "%.2f", x);
